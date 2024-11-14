@@ -1,0 +1,37 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: greetings-service
+          uri: lb://greetings-service
+          predicates:
+            - Path=/api/greetings-service/**
+
+        - id: greetings-feign-client
+          uri: lb://greetings-feign-client
+          predicates:
+            - Path=/api/greetings-feign-client/**
+
+eureka:
+ client:
+   register-with-eureka: false
+   fetch-registry: true
+   service-url:
+     defaultZone: https://eureka-server-153892321326.us-central1.run.app/eureka
+ instance:
+   hostname: eureka-server-153892321326.us-central1.run.app
+   prefer-ip-address: false
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive.function.client: DEBUG
